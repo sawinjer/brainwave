@@ -1,30 +1,8 @@
-import type { App as ServerApp } from '@brainwave/server';
-import { treaty } from '@elysiajs/eden';
-import { useEffect, useState } from 'react';
-
-const client = treaty<ServerApp>('http://localhost:3000');
-
-function App() {
-	const [count, setCount] = useState(0);
-	const [message, setMessage] = useState<string>('');
-
-	useEffect(() => {
-		client.get().then((response) => {
-			setMessage(response.data ?? '');
-		});
-	}, []);
-
+export function App() {
 	return (
-		<>
-			<div className="bg-red-50">
-				<h1>{message || 'Loading...'}</h1>
-			</div>
-			<div className="card">
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
-					count is {count}
-				</button>
-			</div>
-		</>
+		<div className="dark w-screen h-screen bg-background flex items-center justify-center">
+			<h1 className="text-foreground">Hello there</h1>
+		</div>
 	);
 }
 
