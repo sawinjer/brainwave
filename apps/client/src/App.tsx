@@ -16,7 +16,7 @@ function App() {
 
 	return (
 		<>
-			<div>
+			<div className="bg-red-50">
 				<h1>{message || 'Loading...'}</h1>
 			</div>
 			<div className="card">
