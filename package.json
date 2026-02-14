@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "catalog": {
+    "@elysiajs/eden": "^1.4.6",
+    "elysia": "^1.0.0"
+  }
 }

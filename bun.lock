@@ -13,6 +13,8 @@
       "name": "client",
       "version": "0.0.0",
       "dependencies": {
+        "@brainwave/server": "workspace:*",
+        "@elysiajs/eden": "catalog:",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
       },
@@ -22,6 +24,7 @@
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
         "@vitejs/plugin-react-swc": "^3.3.2",
+        "elysia": "catalog:",
         "eslint": "^8.45.0",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
@@ -30,18 +33,40 @@
       },
     },
     "apps/server": {
-      "name": "server",
-      "version": "1.0.50",
+      "name": "@brainwave/app-server",
+      "version": "0.0.1",
       "dependencies": {
-        "elysia": "latest",
+        "@brainwave/server": "workspace:*",
+        "elysia": "^1.0.0",
       },
       "devDependencies": {
-        "bun-types": "latest",
+        "bun-types": "^1.0.0",
+        "typescript": "^5.0.0",
+      },
+    },
+    "packages/server": {
+      "name": "@brainwave/server",
+      "version": "0.0.1",
+      "dependencies": {
+        "elysia": "^1.0.0",
+      },
+      "devDependencies": {
+        "typescript": "^5.0.0",
       },
     },
   },
+  "catalog": {
+    "@elysiajs/eden": "^1.4.6",
+    "elysia": "^1.0.0",
+  },
   "packages": {
     "@borewit/text-codec": ["@borewit/text-codec@0.2.1", "", {}, "sha512-k7vvKPbf7J2fZ5klGRD9AeKfUvojuZIQ3BT5u7Jfv+puwXkUBUT5PVyMDfJZpy30CBDXGMgw7fguK/lpOMBvgw=="],
+
+    "@brainwave/app-server": ["@brainwave/app-server@workspace:apps/server"],
+
+    "@brainwave/server": ["@brainwave/server@workspace:packages/server"],
+
+    "@elysiajs/eden": ["@elysiajs/eden@1.4.8", "", { "peerDependencies": { "elysia": ">=1.4.19" } }, "sha512-a7oct2kFa49tH+GawZtSUCZR2rQgucNYgGLz8alXUqb4IrU3PASA0T4zXJw4MhdV1Xb6vyiR7p7kkqJcVjgbkA=="],
 
     "@esbuild/android-arm": ["@esbuild/android-arm@0.18.20", "", { "os": "android", "cpu": "arm" }, "sha512-fyi7TDI/ijKKNZTUJAQqiG5T7YjJXgnzkURqmGj13C6dCqckZBLdl4h7bkhHt/t0WP+zO9/zwroDvANaOqO5Sw=="],
 
@@ -398,8 +423,6 @@
     "scheduler": ["scheduler@0.23.2", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ=="],
 
     "semver": ["semver@7.7.4", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA=="],
-
-    "server": ["server@workspace:apps/server"],
 
     "shebang-command": ["shebang-command@2.0.0", "", { "dependencies": { "shebang-regex": "^3.0.0" } }, "sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA=="],
 
