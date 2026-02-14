@@ -5,11 +5,10 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "prettier": "^3.7.4",
+    "@biomejs/biome": "^1.9.0",
     "turbo": "^2.8.8",
     "typescript": "5.9.2"
   },
@@ -22,6 +21,7 @@
     "packages/*"
   ],
   "catalog": {
+    "@biomejs/biome": "^1.9.0",
     "@elysiajs/eden": "^1.4.6",
     "elysia": "^1.0.0"
   }
