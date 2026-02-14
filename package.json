@@ -2,10 +2,10 @@
   "name": "brainwave",
   "private": true,
   "scripts": {
+    "start": "turbo run start",
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "check-types": "turbo run check-types"
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
@@ -21,7 +21,7 @@
     "packages/*"
   ],
   "catalog": {
-    "@biomejs/biome": "^1.9.0",
+    "@biomejs/biome": "^2.2.2",
     "@elysiajs/eden": "^1.4.6",
     "elysia": "^1.0.0"
   }

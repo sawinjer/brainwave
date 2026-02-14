@@ -8,9 +8,12 @@
 		".": "./src/index.ts"
 	},
 	"dependencies": {
+		"@elysiajs/cors": "^1.4.1",
 		"elysia": "^1.0.0"
 	},
 	"devDependencies": {
+		"@brainwave/config": "workspace:*",
+		"@biomejs/biome": "catalog:",
 		"typescript": "^5.0.0"
 	}
 }
