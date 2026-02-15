@@ -1,0 +1,20 @@
+services:
+  database:
+    image: postgis/postgis:17-master
+    # Required when running on platform other than amd64, like Apple M1/M2:
+    platform: linux/amd64
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    ports:
+      - 6543:5432
+    environment:
+      POSTGRES_USER: "brainwave"
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: "brainwave"
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
