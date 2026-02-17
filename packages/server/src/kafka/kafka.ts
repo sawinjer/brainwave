@@ -3,10 +3,6 @@ import { Kafka } from 'kafkajs';
 export const kafka = new Kafka({
 	clientId: 'brainwave-server',
 	brokers: ['localhost:9092'],
-	retry: {
-		initialRetryTime: 100,
-		retries: 5,
-	},
 });
 
 const producer = kafka.producer();
