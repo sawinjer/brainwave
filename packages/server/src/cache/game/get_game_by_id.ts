@@ -24,7 +24,7 @@ export const getGameById = async (id: string) => {
 	const [response] = await safeTryPromise(async () =>
 		db.select().from(gamesTable).where(eq(gamesTable.id, id))
 	);
-	const game = response?.[0] as Game;
+	const game = response?.[0] as Game | undefined;
 
 	if (game) {
 		await cacheGame(game);

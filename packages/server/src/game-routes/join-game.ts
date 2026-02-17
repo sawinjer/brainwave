@@ -11,6 +11,7 @@ import { safeTry } from '../utils/safe-try';
 import { gameToGameState } from './game-to-game-state';
 import { PlayerActions } from './player-actions';
 import { setAnswerToGame } from './set-answer-to-game';
+import { updateGameById } from '../cache/game/update-game-by-id';
 
 const authPayload = {
 	playerName: t.String(),
@@ -40,9 +41,13 @@ getConsumer().then(async (consumer) => {
 				return;
 			}
 
-			const [game] = safeTry<schema.Game>(
-				() => message.value && JSON.parse(message.value.toString())
-			);
+			const gameId = z.uuid().safeParse(message.value?.toString());
+
+			if (!gameId.success) {
+				return;
+			}
+
+			const game = await getGameById(gameId.data);
 
 			if (!game) {
 				return;
@@ -55,6 +60,18 @@ getConsumer().then(async (consumer) => {
 		},
 	});
 });
+
+const notifyGameChanged = async (gameId: string) => {
+	const producer = await getProducer();
+	await producer.send({
+		topic: KafkaTopics.GameStateUpdate,
+		messages: [
+			{
+				value: gameId,
+			},
+		],
+	});
+};
 
 export const joinGameRoute = new Elysia().ws('/:gameId', {
 	message: async (socket) => {
@@ -72,8 +89,6 @@ export const joinGameRoute = new Elysia().ws('/:gameId', {
 			return;
 		}
 
-		const producer = await getProducer();
-
 		switch (socket.body.action) {
 			case PlayerActions.Join:
 				if (!connections[game.id]) {
@@ -85,26 +100,40 @@ export const joinGameRoute = new Elysia().ws('/:gameId', {
 					playerName: socket.body.playerName,
 				};
 
-				socket.send(gameToGameState(game, socket.body.playerName));
+				await updateGameById(game.id, {
+					playersAmount: game.playersAmount + 1,
+				});
+				await notifyGameChanged(game.id);
 				break;
 			case PlayerActions.AnswerVote:
-				await db.update(schema.gamesTable).set({
+				await updateGameById(game.id, {
 					answers: setAnswerToGame(game, socket.body.playerName, socket.body.votedAnswer),
 				});
-				await invalidateGameCache(game.id);
+				await notifyGameChanged(game.id);
 
-				await producer.send({
-					topic: KafkaTopics.GameStateUpdate,
-					messages: [
-						{
-							value: JSON.stringify(game),
-						},
-					],
-				});
 				break;
 		}
 	},
-	close: (socket) => {
+	close: async (socket) => {
+		for (const entry of Object.entries(connections)) {
+			const [gameId, socketsList] = entry;
+
+			if (!(socket.id in socketsList)) {
+				continue;
+			}
+
+			const game = await getGameById(gameId);
+
+			if (game) {
+				await updateGameById(gameId, {
+					playersAmount: Math.max(0, game.playersAmount - 1),
+				});
+
+				await notifyGameChanged(gameId);
+			}
+
+			delete socketsList[socket.id];
+		}
 		Object.entries(connections).forEach((entry) => {
 			const socketsList = entry[1];
 			delete socketsList[socket.id];

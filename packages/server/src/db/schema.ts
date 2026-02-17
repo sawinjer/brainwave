@@ -15,7 +15,15 @@ export const gamesTable = pgTable('games', {
 	playersAmount: integer('players_amount').notNull().default(0),
 });
 
-export type Quiz = InferSelectModel<typeof quizzesTable>;
+export type Quiz = InferSelectModel<typeof quizzesTable> & {
+	questions: Array<{
+		question: string;
+		answers: Array<{
+			answer: string;
+			isCorrect: string;
+		}>;
+	}>;
+};
 
 export type Game = InferSelectModel<typeof gamesTable> & {
 	answers: Array<Record<string, number>>;
