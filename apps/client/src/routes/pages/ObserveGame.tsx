@@ -1,7 +1,7 @@
 import { useParams } from "@tanstack/react-router";
 import { useGameReview } from "@/hooks/use-game-review";
 
-export const ObserveGame = () => {
+export const ObserveGamePage = () => {
   const params = useParams({ from: "/game/$gameId" });
   const game = useGameReview(params.gameId);
 
