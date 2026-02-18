@@ -34,3 +34,5 @@ export const gameToReview = (game: Game) => {
 		},
 	};
 };
+
+export type GameReview = ReturnType<typeof gameToReview>;

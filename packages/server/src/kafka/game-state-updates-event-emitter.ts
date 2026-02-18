@@ -51,7 +51,11 @@ const startListen = async () => {
 			}
 
 			for (const callback of listeners) {
-				callback(game);
+				try {
+					callback(game);
+				} catch (error) {
+					console.error(error);
+				}
 			}
 		},
 	});

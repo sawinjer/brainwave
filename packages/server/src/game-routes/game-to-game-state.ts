@@ -16,3 +16,5 @@ export const gameToGameState = (game: Game, playerName: string) => {
 		totalAnswersAmount: game.answers.map((answer) => Object.keys(answer).length),
 	};
 };
+
+export type GameState = ReturnType<typeof gameToGameState>;

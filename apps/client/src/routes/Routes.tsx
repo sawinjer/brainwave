@@ -3,6 +3,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { EditQuizPage } from './pages/EditQuizPage';
 import { MainPage } from './pages/Main';
 import { QuizCreationPage } from './pages/QuizCreation';
+import { ObserveGame } from './pages/ObserveGame';
 
 const rootRoute = createRootRoute({
 	component: () => (
@@ -31,7 +32,18 @@ const editQuizRoute = createRoute({
 	component: () => <EditQuizPage />,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, quizCreationRoute, editQuizRoute]);
+const observeGameRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: '/game/$gameId',
+	component: () => <ObserveGame />,
+});
+
+const routeTree = rootRoute.addChildren([
+	indexRoute,
+	quizCreationRoute,
+	editQuizRoute,
+	observeGameRoute,
+]);
 export const router = createRouter({ routeTree });
 
 declare module '@tanstack/react-router' {
