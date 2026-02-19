@@ -1,4 +1,4 @@
-export enum PlayerActions {
-	Join = 'Join',
-	AnswerVote = 'AnswerVote',
-}
+export const PlayerActions = {
+  Join: "Join",
+  AnswerVote: "AnswerVote",
+} as const;

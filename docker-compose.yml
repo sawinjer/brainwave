@@ -51,6 +51,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.client
+      args:
+        SERVER_URL: ${SERVER_URL}
     deploy:
       replicas: 2
     environment:

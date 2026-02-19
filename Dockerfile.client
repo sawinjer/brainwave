@@ -1,18 +1,29 @@
 FROM oven/bun:1-alpine AS base
-WORKDIR /app
 
-FROM base AS deps
-COPY package.json bun.lockb* ./
-COPY packages/server/package.json ./packages/server/
-COPY apps/client/package.json ./apps/client/
-COPY packages/config/package.json ./packages/config/
-RUN bun install --frozen-lockfile
-
-FROM base AS builder
+RUN apk update
+RUN apk add --no-cache libc6-compat
+# Set working directory
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# ---
+FROM base AS prepare
+RUN bun add --global turbo@^2.8.8
 COPY . .
-RUN bun run build
+
+# Here we pick the app
+RUN turbo prune client --docker
+# ---
+FROM base AS builder
+# First install the dependencies (as they change less often)
+COPY --from=prepare /app/out/json/ .
+RUN bun install
+RUN bun add -d @types/bun
+RUN bun add --global turbo@^2.8.8
+# Build the project
+COPY --from=prepare /app/out/full/ .
+# Uncomment and use build args to enable remote caching
+ARG SERVER_URL
+ENV SERVER_URL=$SERVER_URL
+RUN turbo build
 
 FROM nginx:alpine AS runner
 COPY --from=builder /app/apps/client/dist /usr/share/nginx/html
