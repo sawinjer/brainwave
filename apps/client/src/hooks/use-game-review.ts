@@ -1,4 +1,4 @@
-import type { GameReview } from '@brainwave/server';
+import type { GameReview } from '@brainwave/server/client';
 import { useEffect, useState } from 'react';
 import { server } from '@/lib/server';
 

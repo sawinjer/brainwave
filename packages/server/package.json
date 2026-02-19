@@ -9,7 +9,8 @@
     "migrate": "bunx drizzle-kit migrate"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",

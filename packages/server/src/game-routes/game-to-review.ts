@@ -24,7 +24,10 @@ export const gameToReview = (game: Game, playersAmount: number) => {
 
     return {
       ...question,
-      answers: question.answers.map((answer) => ({ answer: answer.answer })),
+      answers: question.answers.map((answer) => ({
+        answer: answer.answer,
+        isCorrect: false,
+      })),
     };
   });
 

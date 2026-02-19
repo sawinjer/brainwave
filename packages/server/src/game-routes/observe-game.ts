@@ -41,7 +41,7 @@ export const observeGameRoute = new Elysia().ws("/observe/:gameId", {
     }
 
     connections[gameId.data][socket.id] = socket;
-    socket.send(gameToReview(game));
+    socket.send(gameToReview(game, await getPlayersAmount(game.id)));
   },
   close: (socket) => {
     Object.entries(connections).forEach((entry) => {
