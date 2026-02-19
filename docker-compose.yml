@@ -19,6 +19,11 @@ services:
       - kafka_data:/var/lib/kafka/data
     networks:
       - brainwave-network
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   server-migrations:
     build:
