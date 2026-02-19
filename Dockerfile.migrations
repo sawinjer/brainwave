@@ -1,0 +1,24 @@
+FROM oven/bun:1-alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json bun.lockb* ./
+COPY packages/server/package.json ./packages/server/
+RUN bun install --frozen-lockfile
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN bun add -d drizzle-kit
+
+FROM base AS runner
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/server/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/packages/server/drizzle ./drizzle
+COPY --from=builder /app/packages/server/src/db/schema.ts ./src/db/schema.ts
+
+ENV DATABASE_URL=""
+
+CMD ["bun", "x", "drizzle-kit", "migrate"]

@@ -1,46 +1,69 @@
 services:
-  database:
-    image: postgis/postgis:17-master
-    # Required when running on platform other than amd64, like Apple M1/M2:
-    platform: linux/amd64
-    volumes:
-      - ./data/database:/var/lib/postgresql/data
-    ports:
-      - 6543:5432
-    environment:
-      POSTGRES_USER: "brainwave"
-      POSTGRES_PASSWORD: "123"
-      POSTGRES_DB: "brainwave"
-    healthcheck:
-      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_interval: 5s
-      start_period: 30s
   kafka:
-    image: apache/kafka:4.1.1
-    ports:
-      - 9092:9092
+    image: apache/kafka:3.7.0
     environment:
-      KAFKA_NODE_ID: "1"
-      KAFKA_PROCESS_ROLES: "broker,controller"
-      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:9092"
-      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://brainwave-kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@brainwave-kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
-  redis:
-    image: redis:8
-    ports:
-      - 7878:6379
-    healthcheck:
-      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_interval: 5s
-      start_period: 30s
+      KAFKA_TOPIC_AUTO_CREATE_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - brainwave-network
+
+  server-migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    networks:
+      - brainwave-network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    deploy:
+      replicas: 2
+    depends_on:
+      kafka:
+        condition: service_healthy
+      server-migrations:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      KAFKA_BROKERS: brainwave-kafka:9092
+    networks:
+      - brainwave-network
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    deploy:
+      replicas: 2
+    environment:
+      VITE_SERVER_URL: ${SERVER_URL}
+    networks:
+      - brainwave-network
+
+networks:
+  brainwave-network:
+    driver: bridge
+
+volumes:
+  kafka_data:

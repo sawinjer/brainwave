@@ -1,0 +1,30 @@
+FROM oven/bun:1-alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json bun.lockb* ./
+COPY packages/server/package.json ./packages/server/
+COPY apps/server/package.json ./apps/server/
+RUN bun install --frozen-lockfile
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN bun run build
+
+FROM base AS runner
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/server ./packages/server
+COPY --from=builder /app/apps/server ./apps/server
+
+ENV DATABASE_URL=""
+ENV REDIS_URL=""
+ENV KAFKA_BROKERS=""
+ENV SERVER_PORT=3000
+
+EXPOSE 3000
+
+CMD ["bun", "run", "apps/server/src/index.ts"]

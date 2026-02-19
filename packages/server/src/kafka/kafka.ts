@@ -1,9 +1,10 @@
 import { Kafka } from 'kafkajs';
 import { KafkaTopics } from './topics';
+import { env } from '../env';
 
 export const kafka = new Kafka({
 	clientId: 'brainwave-server',
-	brokers: ['localhost:9092'],
+	brokers: env.KAFKA_BROKERS.split(','),
 });
 
 const producer = kafka.producer();
