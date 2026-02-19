@@ -4,21 +4,22 @@ WORKDIR /app
 FROM base AS deps
 COPY package.json bun.lockb* ./
 COPY packages/server/package.json ./packages/server/
+COPY packages/config/package.json ./packages/config/
+COPY apps/server/package.json ./apps/server/
 RUN bun install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN bun add -d drizzle-kit
 
 FROM base AS runner
+ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/server/drizzle.config.ts ./drizzle.config.ts
-COPY --from=builder /app/packages/server/drizzle ./drizzle
-COPY --from=builder /app/packages/server/src/db/schema.ts ./src/db/schema.ts
+COPY --from=builder /app/packages/server ./packages/server
+COPY --from=builder /app/packages/config ./packages/config
+COPY --from=builder /app/apps/server ./apps/server
 
-ENV DATABASE_URL=""
 
 CMD ["bun", "x", "drizzle-kit", "migrate"]
