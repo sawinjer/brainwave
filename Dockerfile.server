@@ -21,6 +21,15 @@ RUN bun add --global turbo@^2.8.8
 
 COPY --from=prepare /app/out/full/ .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+ARG REDIS_URL 
+ENV REDIS_URL=$REDIS_URL
+
+ARG KAFKA_BROKERS
+ENV KAFKA_BROKERS=$KAFKA_BROKERS
+
 EXPOSE 3000
 
 CMD ["turbo", "run", "start"]

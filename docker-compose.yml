@@ -34,6 +34,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.server
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        REDIS_URL: ${REDIS_URL}
+        KAFKA_BROKERS: brainwave-kafka:9092
     deploy:
       replicas: 2
     depends_on:
