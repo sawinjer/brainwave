@@ -37,7 +37,7 @@ services:
       args:
         DATABASE_URL: ${DATABASE_URL}
         REDIS_URL: ${REDIS_URL}
-        KAFKA_BROKERS: kafka:9092
+        KAFKA_BROKERS: ${KAFKA_BROKERS}
     deploy:
       replicas: 2
     depends_on:
@@ -48,7 +48,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS}
 
   client:
     build:
