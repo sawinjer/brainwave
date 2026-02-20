@@ -24,7 +24,7 @@ export const PlayGamePage = () => {
       <h1 className="text-4xl font-serif text-foreground">
         {currentQuestion?.question || "Quiz finished"}
       </h1>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
         {currentQuestion?.answers.map((answer, index) => (
           <Button
             className="min-w-[120px]"
