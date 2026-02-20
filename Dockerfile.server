@@ -23,4 +23,4 @@ COPY --from=prepare /app/out/full/ .
 
 EXPOSE 3000
 
-CMD ["turbo", "run"]
+CMD ["turbo", "run", "start"]
