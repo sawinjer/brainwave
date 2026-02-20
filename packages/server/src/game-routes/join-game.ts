@@ -39,7 +39,7 @@ const connections: Record<
 onGameStateChanged((game) => {
   console.log("ON KAFKA EVENT", game);
 
-  const sockets = Object.values(connections[game.id]);
+  const sockets = Object.values(connections[game.id] || {});
   for (const { socket, playerName } of sockets) {
     socket.send(gameToGameState(game, playerName));
   }
