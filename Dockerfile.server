@@ -1,29 +1,26 @@
 FROM oven/bun:1-alpine AS base
-WORKDIR /app
 
-FROM base AS deps
-COPY package.json bun.lockb* ./
-COPY packages/server/package.json ./packages/server/
-COPY packages/config/package.json ./packages/config/
-COPY apps/server/package.json ./apps/server/
-RUN bun install --frozen-lockfile
-
-FROM base AS builder
+RUN apk update
+RUN apk add --no-cache libc6-compat
+# Set working directory
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# ---
+FROM base AS prepare
+RUN bun add --global turbo@^2.8.8
 COPY . .
 
-FROM base AS runner
-ENV NODE_ENV=production
-WORKDIR /app
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/server ./packages/server
-COPY --from=builder /app/packages/config ./packages/config
-COPY --from=builder /app/apps/server ./apps/server
+# Here we pick the app
+RUN turbo prune server --docker
+
+FROM base AS runner 
+
+COPY --from=prepare /app/out/json/ .
+RUN bun install
+RUN bun add -d @types/bun
+RUN bun add --global turbo@^2.8.8
+
+COPY --from=prepare /app/out/full/ .
 
 EXPOSE 3000
 
-CMD ["bun", "run", "apps/server/src/index.ts"]
-
-
-
+CMD ["turbo", "run"]
