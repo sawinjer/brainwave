@@ -9,4 +9,7 @@ RUN bun install --frozen-lockfile
 COPY packages/server ./packages/server
 COPY packages/config ./packages/config
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 CMD ["bun", "run", "--cwd", "packages/server", "migrate"]

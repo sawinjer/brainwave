@@ -22,7 +22,7 @@ RUN bun add --global turbo@^2.8.8
 COPY --from=prepare /app/out/full/ .
 # Uncomment and use build args to enable remote caching
 ARG SERVER_URL
-ENV SERVER_URL=$SERVER_URL
+ENV VITE_SERVER_URL=$SERVER_URL
 RUN turbo build
 
 FROM nginx:alpine AS runner
