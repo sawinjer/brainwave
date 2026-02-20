@@ -8,7 +8,8 @@
       "outputs": ["dist/**"]
     },
     "start": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["DATABASE_URL", "REDIS_URL", "KAFKA_BROKERS"]
     },
     "lint": {
       "dependsOn": ["^lint"]
