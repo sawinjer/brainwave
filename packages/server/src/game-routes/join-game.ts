@@ -37,8 +37,6 @@ const connections: Record<
 > = {};
 
 onGameStateChanged((game) => {
-  console.log("ON KAFKA EVENT", game);
-
   const sockets = Object.values(connections[game.id] || {});
   for (const { socket, playerName } of sockets) {
     socket.send(gameToGameState(game, playerName));
@@ -77,7 +75,6 @@ export const joinGameRoute = new Elysia().ws("/:gameId", {
           playerName: socket.body.playerName,
         };
 
-        socket.send(gameToGameState(game, socket.body.playerName));
         await joinPlayer(game.id, socket.body.playerName);
         await notifyGameChanged(game.id);
         break;
