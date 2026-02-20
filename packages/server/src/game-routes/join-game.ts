@@ -66,6 +66,7 @@ export const joinGameRoute = new Elysia().ws("/:gameId", {
         }
 
         if (socket.id in connections[game.id]) {
+          socket.send(gameToGameState(game, socket.body.playerName));
           return;
         }
 
@@ -74,6 +75,7 @@ export const joinGameRoute = new Elysia().ws("/:gameId", {
           playerName: socket.body.playerName,
         };
 
+        socket.send(gameToGameState(game, socket.body.playerName));
         await joinPlayer(game.id, socket.body.playerName);
         await notifyGameChanged(game.id);
         break;
