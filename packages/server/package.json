@@ -6,7 +6,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "generate": "bunx drizzle-kit generate",
-    "migrate": "bunx drizzle-kit migrate"
+    "migrate": "echo $DATABASE_URL; bunx drizzle-kit migrate"
   },
   "exports": {
     ".": "./src/index.ts",

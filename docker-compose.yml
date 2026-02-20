@@ -14,8 +14,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
-    networks:
-      - brainwave-network
     healthcheck:
       test: ["CMD-SHELL", "nc -z localhost 9092 || exit 1"]
       interval: 10s
@@ -31,8 +29,6 @@ services:
         DATABASE_URL: ${DATABASE_URL}
     environment:
       DATABASE_URL: ${DATABASE_URL}
-    networks:
-      - brainwave-network
 
   server:
     build:
@@ -49,8 +45,6 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
       KAFKA_BROKERS: brainwave-kafka:9092
-    networks:
-      - brainwave-network
 
   client:
     build:
@@ -62,12 +56,6 @@ services:
       replicas: 2
     environment:
       VITE_SERVER_URL: ${SERVER_URL}
-    networks:
-      - brainwave-network
-
-networks:
-  brainwave-network:
-    driver: bridge
 
 volumes:
   kafka_data:
