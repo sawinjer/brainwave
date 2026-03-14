@@ -37,3 +37,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 data
+
+# tests
+/playwright-report/**/*
+/test-results/**/*
