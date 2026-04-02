@@ -40,6 +40,12 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow BrainWave to access your camera to scan QR codes"
+        }
       ]
     ],
     "experiments": {
