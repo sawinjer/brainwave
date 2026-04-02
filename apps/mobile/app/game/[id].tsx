@@ -1,62 +1,12 @@
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { View, Text, StyleSheet, ScrollView, Share } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
+import QRCode from 'react-native-qrcode-svg';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CardHeader } from '@/components/ui/card-header';
 import { CardContent } from '@/components/ui/card-content';
 import { useGameReview } from '@/hooks/use-game-review';
 import { useGoToNextQuestion } from '@/hooks/use-go-to-next-question';
-
-const SimpleQRCode = ({ value }: { value: string }) => {
-  const size = 150;
-  const backgroundColor = 'white';
-  const modules = generateQRMatrix(value);
-
-  return (
-    <View style={[styles.qrContainer, { backgroundColor, padding: 8, borderRadius: 8 }]}>
-      <Svg width={size} height={size}>
-        {modules.map((row, rowIndex) =>
-          row.map((isBlack, colIndex) => (
-            isBlack && (
-              <Rect
-                key={`${rowIndex}-${colIndex}`}
-                x={colIndex * 5}
-                y={rowIndex * 5}
-                width={5}
-                height={5}
-                color="black"
-              />
-            )
-          ))
-        )}
-      </Svg>
-    </View>
-  );
-};
-
-function generateQRMatrix(data: string): boolean[][] {
-  const size = 25;
-  const matrix: boolean[][] = Array(size).fill(null).map(() => Array(size).fill(false));
-
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      if (i < 7 && j < 7) matrix[i][j] = true;
-      else if (i < 7 && j > size - 8) matrix[i][j] = true;
-      else if (i > size - 8 && j < 7) matrix[i][j] = true;
-      else if (i % 2 === 0) matrix[i][j] = (i + j) % 3 === 0;
-    }
-  }
-
-  const hash = data.split('').reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0);
-  for (let i = 0; i < 100; i++) {
-    const row = Math.abs(hash * (i + 1)) % size;
-    const col = Math.abs(hash * (i + 2)) % size;
-    matrix[row][col] = !matrix[row][col];
-  }
-
-  return matrix;
-}
 
 export default function ObserveGamePage() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -140,7 +90,9 @@ export default function ObserveGamePage() {
         )}
 
         <View style={styles.qrSection}>
-          <SimpleQRCode value={`exp://mobile/play/${id}`} />
+          <View style={styles.qrContainer}>
+            <QRCode value={`exp://mobile/play/${id}`} size={150} />
+          </View>
           <View style={styles.qrButtons}>
             <Button onPress={() => goToNextQuestion.mutate()}>
               Join the game
@@ -215,6 +167,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   qrContainer: {
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
