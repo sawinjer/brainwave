@@ -44,7 +44,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow BrainWave to access your camera to scan QR codes"
+          "cameraPermission": "Allow BrainWave to access your camera to scan QR codes",
+          "barcodeScannerEnabled": true
         }
       ]
     ],
