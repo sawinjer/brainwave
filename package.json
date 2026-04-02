@@ -28,5 +28,8 @@
     "@biomejs/biome": "^2.2.2",
     "@elysiajs/eden": "^1.4.6",
     "elysia": "^1.0.0"
+  },
+  "dependencies": {
+    "babel-preset-expo": "^55.0.13"
   }
 }
