@@ -46,17 +46,16 @@ export default function Home() {
           barcodeScannerSettings={{
             barcodeTypes: ["qr"],
           }}
-        >
-          <View style={styles.overlay}>
-            <Text style={styles.scanText}>Scan QR code</Text>
-            <TouchableOpacity 
-              style={styles.closeButton}
-              onPress={() => setShowScanner(false)}
-            >
-              <Text style={styles.closeText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </CameraView>
+        />
+        <View style={styles.overlay}>
+          <Text style={styles.scanText}>Scan QR code</Text>
+          <TouchableOpacity 
+            style={styles.closeButton}
+            onPress={() => setShowScanner(false)}
+          >
+            <Text style={styles.closeText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
