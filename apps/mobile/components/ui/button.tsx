@@ -1,9 +1,21 @@
-import type { ComponentPropsWithoutRef, ElementRef } from 'react';
-import { forwardRef, useState } from 'react';
-import { Pressable, Text, StyleSheet, type ViewStyle, type TextStyle } from 'react-native';
+import type { ComponentPropsWithoutRef, ElementRef } from "react";
+import { forwardRef, useState } from "react";
+import {
+  Pressable,
+  Text,
+  StyleSheet,
+  type ViewStyle,
+  type TextStyle,
+} from "react-native";
 
-type ButtonVariant = 'default' | 'outline' | 'secondary' | 'destructive' | 'ghost' | 'link';
-type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
+type ButtonVariant =
+  | "default"
+  | "outline"
+  | "secondary"
+  | "destructive"
+  | "ghost"
+  | "link";
+type ButtonSize = "default" | "sm" | "lg" | "icon";
 
 interface ButtonProps extends ComponentPropsWithoutRef<typeof Pressable> {
   variant?: ButtonVariant;
@@ -13,21 +25,25 @@ interface ButtonProps extends ComponentPropsWithoutRef<typeof Pressable> {
 }
 
 const variantStyles: Record<ButtonVariant, ViewStyle> = {
-  default: { backgroundColor: '#6366f1' },
-  outline: { backgroundColor: 'transparent', borderWidth: 1, borderColor: '#d1d5db' },
-  secondary: { backgroundColor: '#e5e7eb' },
-  destructive: { backgroundColor: '#ef4444' },
-  ghost: { backgroundColor: 'transparent' },
-  link: { backgroundColor: 'transparent' },
+  default: { backgroundColor: "#6366f1" },
+  outline: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+  },
+  secondary: { backgroundColor: "#e5e7eb" },
+  destructive: { backgroundColor: "#ef4444" },
+  ghost: { backgroundColor: "transparent" },
+  link: { backgroundColor: "transparent" },
 };
 
 const textStyles: Record<ButtonVariant, TextStyle> = {
-  default: { color: 'white' },
-  outline: { color: '#374151' },
-  secondary: { color: '#374151' },
-  destructive: { color: 'white' },
-  ghost: { color: '#6366f1' },
-  link: { color: '#6366f1' },
+  default: { color: "white" },
+  outline: { color: "#374151" },
+  secondary: { color: "#374151" },
+  destructive: { color: "white" },
+  ghost: { color: "#6366f1" },
+  link: { color: "#6366f1" },
 };
 
 const sizeStyles: Record<ButtonSize, ViewStyle> = {
@@ -38,7 +54,18 @@ const sizeStyles: Record<ButtonSize, ViewStyle> = {
 };
 
 export const Button = forwardRef<ElementRef<typeof Pressable>, ButtonProps>(
-  ({ variant = 'default', size = 'default', className, children, disabled, ...props }, ref) => {
+  (
+    {
+      variant = "default",
+      size = "default",
+      className,
+      children,
+      disabled,
+      style,
+      ...props
+    },
+    ref,
+  ) => {
     const [pressed, setPressed] = useState(false);
 
     return (
@@ -50,9 +77,15 @@ export const Button = forwardRef<ElementRef<typeof Pressable>, ButtonProps>(
         style={[
           variantStyles[variant],
           sizeStyles[size],
-          { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+          },
           disabled && styles.disabled,
           pressed && styles.pressed,
+          style,
         ]}
         {...props}
       >
@@ -61,10 +94,10 @@ export const Button = forwardRef<ElementRef<typeof Pressable>, ButtonProps>(
         </Text>
       </Pressable>
     );
-  }
+  },
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 const styles = StyleSheet.create({
   disabled: {

@@ -7,13 +7,12 @@ import { CardHeader } from "@/components/ui/card-header";
 import { CardContent } from "@/components/ui/card-content";
 import { useGameReview } from "@/hooks/use-game-review";
 import { useGoToNextQuestion } from "@/hooks/use-go-to-next-question";
-import { serverUrl } from "@/lib/server";
 
 export default function ObserveGamePage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const game = useGameReview(id);
   const goToNextQuestion = useGoToNextQuestion(id);
-  const url = `${serverUrl}/play/${id}`;
+  const url = `${process.env.EXPO_PUBLIC_URL}/play/${id}`;
 
   const copyGameLink = async () => {
     try {
@@ -167,6 +166,7 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     marginTop: 12,
+    alignSelf: "stretch",
   },
   qrSection: {
     alignItems: "center",
