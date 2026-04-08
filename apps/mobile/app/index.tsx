@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { Button } from "@/components/ui/button";
-import { CameraView, useCameraPermissions } from "expo-camera";
 
 export default function Home() {
   const router = useRouter();
   const [gameCode, setGameCode] = useState("");
-  const [showScanner, setShowScanner] = useState(false);
-  const [permission, requestPermission] = useCameraPermissions();
 
   const handleJoin = () => {
     if (!gameCode.trim()) {
@@ -17,48 +14,6 @@ export default function Home() {
     }
     router.push(`/play/${gameCode.trim()}`);
   };
-
-  const handleScan = () => {
-    if (!permission?.granted) {
-      requestPermission().then((result) => {
-        if (result.granted) {
-          setShowScanner(true);
-        }
-      });
-    } else {
-      setShowScanner(true);
-    }
-  };
-
-  const handleBarCodeScanned = ({ data }: { data: string }) => {
-    setShowScanner(false);
-    if (data) {
-      router.push(`/play/${data}`);
-    }
-  };
-
-  if (showScanner) {
-    return (
-      <View style={styles.container}>
-        <CameraView
-          style={StyleSheet.absoluteFillObject}
-          onBarcodeScanned={handleBarCodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr"],
-          }}
-        />
-        <View style={styles.overlay}>
-          <Text style={styles.scanText}>Scan QR code</Text>
-          <TouchableOpacity 
-            style={styles.closeButton}
-            onPress={() => setShowScanner(false)}
-          >
-            <Text style={styles.closeText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
@@ -76,9 +31,6 @@ export default function Home() {
               autoCapitalize="none"
               autoCorrect={false}
             />
-            <TouchableOpacity style={styles.scanButton} onPress={handleScan}>
-              <Text style={styles.scanButtonText}>📷</Text>
-            </TouchableOpacity>
           </View>
           <Button variant="outline" onPress={handleJoin}>
             Join game
