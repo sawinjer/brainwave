@@ -1,4 +1,5 @@
 import cors from "@elysiajs/cors";
+import openapi from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import { gameRoutes } from "./game-routes";
 import type { GameState as GameStateType } from "./game-routes/game-to-game-state";
@@ -10,6 +11,7 @@ import { SocketStatusCode } from "./socket-status-codes";
 
 const app = new Elysia()
   .use(cors())
+  .use(openapi())
   .use(quizRoutes)
   .use(gameRoutes)
   .get("/health", () => ({ status: "ok" }));
